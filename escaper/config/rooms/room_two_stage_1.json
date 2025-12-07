@@ -1,0 +1,54 @@
+{
+  "room_id": "room_two_stage_1",
+  "title": "Office and Archive",
+  "intro": "You are in a dim office with a locked side door and a dusty bookshelf.",
+  "objects": [
+    {
+      "id": "side_door",
+      "name": "side door",
+      "category": "door",
+      "visible": true,
+      "inspect_text": "A metal door with a simple keycode lock. It leads to another part of the office.",
+      "lock": {
+        "password": "1234",
+        "password_type": "code",
+        "on_success_text": "The side door unlocks and swings open, revealing more of the office.",
+        "on_failure_text": "The metal lock stays firmly shut.",
+        "reveal_objects": ["desk", "safe"],
+        "escape": false
+      }
+    },
+    {
+      "id": "bookshelf",
+      "name": "dusty bookshelf",
+      "category": "clue",
+      "visible": true,
+      "inspect_text": "Most of the books are useless, but one spine is worn. Inside you find: 'The side door code is 1000 + 234.'",
+      "lock": null
+    },
+    {
+      "id": "desk",
+      "name": "old desk",
+      "category": "clue",
+      "visible": false,
+      "inspect_text": "In the desk drawer you find a scrap of paper: 'Final code = 7 * 11.'",
+      "lock": null
+    },
+    {
+      "id": "safe",
+      "name": "small safe",
+      "category": "door",
+      "visible": false,
+      "inspect_text": "A small combination safe requiring a two-digit code.",
+      "lock": {
+        "password": "77",
+        "password_type": "code",
+        "on_success_text": "The safe opens. Inside is a note with a key attached: 'You are free to go.'",
+        "on_failure_text": "The dial does not move. Wrong code.",
+        "reveal_objects": [],
+        "escape": true
+      }
+    }
+  ]
+}
+

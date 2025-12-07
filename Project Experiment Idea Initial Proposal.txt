@@ -1,0 +1,91 @@
+ESCAPER: A Multi-Agent Escape-Room Platform for Studying Reputation + Gossip and Adversarial Robustness in LLM Teams
+
+Emile Al-Billeh, Layanne A El Assaad
+
+Abstract
+This project proposes to build a text-based multi-agent platform where large language model (LLM) agents collaborate to solve escape-room-style puzzles. In other words, Experimental Social Collaborative Agent Platform for Escape-Room Reasoning (ESCAPER). The environment allows each agent (or persona) to explore objects privately, share discoveries through a team chat, and collectively unlock coded doors. Our main research goal is to investigate how decentralized, private reputation mechanisms, where each agent independently tracks the reliability of its teammates, affect team performance and robustness when an unknown malicious teammate is introduced. Furthermore, we add the capability for private chatting between agents to enable gossip between agents to explore if the malicious agent can be identified and avoided more efficiently than with the private reputation score alone. Beyond this study, the platform will be released as an open, reusable testbed for multi-agent research and, with enough curated rooms, will serve as a benchmark dataset for comparing different LLMs on social skills and collaboration policies.
+
+I. Introduction
+
+Recent advances in large language models (LLMs) have enabled them to act as autonomous agents that can plan, call tools, and coordinate in multi-agent settings toward shared goals. Relative to single agents, multi-agent systems (MAS) better simulate human reasoning, offer stronger coordination, problem-solving, and greater scalability and adaptability (1). Because real deployments impose privacy constraints and asynchrony, MAS are most commonly modeled under partial observability, where  each agent sees only a private slice of the state and must rely on teammates’ natural-language messages. However, when some reports are incorrect or malicious and the team lacks trust calibration, defined as a way to decide how much to rely on each teammate at each moment, errors can cascade through shared memory, wasting actions and producing wrong decisions. To test whether teams calibrate trust and perform well under failures, an adversary is often introduced as a controlled source of unreliability, spreading misinformation, noise, or strategic deception (plausible but misleading hints to slow the team). Moreover, many systems use reputation, a summary score of a teammate’s past reliability, to guide trust decisions. Global reputation (a team-wide score visible to all) tends to propagate early misestimates and rarely links to per-action outcomes, while private reputation (each agent’s personal estimate) can fragment information since teammates don’t benefit from one another’s learning, causing distrust to converge slowly. Most prior work either tunes trust globally or studies decentralized trust with fixed graphs (2), so trust isn’t tied to specific actions or world-verified outcomes. 
+Our Experimental Collaborative Agent Platform for Escape-Room Reasoning (ESCAPER) places LLM teams in an escape room, where agents can privately inspect objects to reveal clues and communicate through a shared group chat. Firstly, we will demonstrate a purely collaborative setting in which agents work together to escape. At this baseline we show how our ESCAPER provides observability into how agents think, collaborate, and communicate. In the second phase, we introduce a seeded malicious teammate that occasionally issues misleading claims, lies, or omits information. At this stage, we evaluate how the malicious agent sabotages the team. After the team escapes, agents will be asked to evaluate each teammate, to assess whether they can identify the adversary. In the third phase,agents keep private reputation scores that start neutral, so the agents have full control over how they wish to adjust their interpretations of others’ reputation and whether they should rely on their observations or double check their inspections. Finally, in the last stage we also add gossip, which is the ability for agents to communicate privately to one another rather than being limited to the public group chat. In terms of metrics, because every claim can trigger a tool check, we produce auditable metrics, such as time-to-distrust, number of wrong attempts, effectively linking agents’ trust choices to concrete outcomes. 
+Upon release, ESCAPER will enable researchers to systematically observe social dynamics, trust formation, and error propagation among LLM agents performing cooperative problem solving. We will keep the baseline version as the default branch (main) while we run our experiments on different branches in the repository. Since the tool is open-source, researchers can fork the repository to create their own experiments using ESCAPER’s framework, where escape-rooms and personas are easy to create and observe. If ESCAPER gains significant usage and enough escape rooms and puzzles are created, these could serve as a benchmark dataset for collaborative and social reasoning skills in  LLMs.
+
+II. Background and Related Work
+Escape-room environments have been used in recent LLM studies to evaluate long-context reasoning and creativity. For instance, VisEscape (2025) focuses on how a single agent forms and updates a situation model and plans multi-step actions to evaluate long-horizon decision-making in virtual escape rooms. EscapeBench (2025) targets creative intelligence in text-based rooms, emphasizing implicit goals, unconventional tool use, and open-ended puzzle solving in a single agent setting. In contrast, ESCAPER allows for  multi-agent collaboration on customizable escape room puzzles instead of single agent problem solving, also providing observability in how the agents think and communicate. Furthermore, we use ESCAPER for our experiment, where we study trust as well as resilience to deceptive (adversarial) teammates under partial observability. Step-Race is a multi-agent benchmark where three LLMs publicly negotiate in chat, then privately pick a move, and the first to reach a target sum wins. While Step-Race provides the same environment observation to all players (the only private element is the final vote) without per-teammate reputation or per-action metrics, ESCAPER’s observability structure allows agents to receive private observations that can be verified with tools. Also, Step-Race outcomes are measured by move collisions and total progression rather than by interaction with an external environment.
+The Trust-Vulnerability Paradox paper highlights the trade-off between improved coordination and permission drift that an increased global trust parameter introduces. This finding further strengthens our aim to tune trust as per-teammate and per-message decisions tied to outcomes, rather than a system-level metric evaluated at the scenario level. We can therefore report utility (success, steps) and exposure costs to examine this trade-off per action rather than globally. Furthermore, the Ultimatum Game experiment  (one player proposes how to split a given endowment with the other player, who in turn either accepts or rejects) shows that multi-agent setups reproduced human strategic behavior at 88% accuracy, while single LLMs only did so at 50% accuracy. Since the ultimatum game is relatively simple compared to an escape-room (especially with changed settings), we can therefore evaluate strategic reasoning and social norms for more complex settings by expanding the game inside ESCAPER. For example, we could create rooms where progress requires combining partial clues from different agents, or involve a subtask which incorporates a competitive ultimatum game where multiple proposers make offers and receivers must pick among them. 
+In terms of reputation systems, RepuNet builds a shared reputation system where agents form self and peer reputations from direct encounters and gossip, and those scores then rewire the social graph to sustain cooperation. By that, RepuNet uses global reputation and reports cooperation and network effect, while we study private reputation and private gossip to report metrics linked to specific actions with per-claim evidence and tool check. Dynamic Reputation Filtering approaches like ADMAC learn a per-message reliability estimator and use a decomposable aggregator so that incoming communications are weighted before influencing the policy. However, these evaluations remain in abstract control games where messages are low-dimensional vectors that are trained and labeled offline, meaning that trust is filtered statistically rather than linked to immediate outcomes. 
+Research Questions lydia paper
+We specifically address the following questions:
+RQ1. Which LLM structure (single or multi-agent)
+more accurately simulates human-like actions in the
+five-round ultimatum game?
+RQ2. Which LLM structure more accurately
+simulates reasoning based on personality?
+RQ3. Which LLM structure more often creates
+robust strategies: both logically complete and consistent
+with personality?
+
+Research Questions:
+We specifically address the following questions:
+Can LLM agents develop second-order trust reasoning? (ie, trust for a specific task only)
+How does private trust evaluated per-action/ per-message impact the trust-vulnerability tradeoff? 
+Do multi-agent LLM teams retain their performance advantage over single agents under adversity and partial observability?
+How does room complexity affect the advantage of private reputation? 
+Can LLM agents discover optimal lying strategies without training signals?
+How do independent agents combine private reasoning and social communication to produce group-level intelligence that exceeds single agent capacity?
+Can distributed belief exchange (gossip) and local trust yield globally consistent reasoning without shared parameters or supervision? Does it accelerate detection of the adversary or add noise?
+Do agents update their trust in others through reputation, evidence, and gossip, in ways that mirror human cognitive heuristics (confirmation bias, recency, over-trust)?
+With resource scarcity, can MAS avoid the tragedy of commons? 
+ Under what communication structure does collective intelligence overcome individual self-interest (e.g. in the case of limited shared resources/ tool calls) without authority?
+
+III. ESCAPER Design
+ESCAPER implements a text-based escape-room simulator. Each room contains any number of objects, but at least 1 door and any other 1 object to provide at least 1 clue when inspected. Those objects are defined by the researcher (e.g., drawer, lamp, painting, door, microscope). At each step, an agent can:
+Inspect any object through a tool call (receiving a private text description).
+Post messages to a shared group chat to communicate findings as part of the returned JSON.
+Act on shared information through a tool call, such as trying a password on a door.
+(For our experiment), privately send a message to another agent(s), as in gossip.
+Information from inspections is private unless voluntarily shared. All messages, inspections, and outcomes are logged to produce structured datasets for later analysis. Those can also be connected to a frontend UI for easier observation. Every agent persona has:
+Private episodic memory for its own observations.
+Access to the group chat log (shared memory).
+(For our experiment) A private reputation table, which stores its trust scores for every teammate during the current round.
+For the reputation and adversary setup in our main experiment, one agent is configured as malicious, occasionally posting false or misleading information. All agents begin with neutral trust scores and adjust them based on experience: If a teammate’s statements frequently mismatch later observations, their reputation decreases. Low-reputation teammates’ messages may be ignored or associated objects re-inspected before being acted upon. Each round starts fresh; reputation does not transfer between rounds. The experiment compares four conditions:
+Baseline, cooperative team, no adversary.
+Adversary present, no reputation logic.
+Adversary present, with private reputation logic enabled.
+Adversary present, with private reputation logic enabled and gossip enabled
+Metrics include success rate, steps to solve, wrong-password attempts, time-to-distrust the adversary, and changes in how much other agents reference the malicious teammate’s messages over time.
+
+IV. Reusability and Benchmark Potential
+ESCAPER will expose a simple JSON schema for rooms and tools for agent actions (inspect, chat, try_password). Researchers can easily create new rooms or plug in different LLMs and prompting styles. Because all interactions are logged, runs can be converted into datasets of multi-agent conversations and actions. With enough curated rooms and difficulty levels, the system can evolve into an open-source benchmark suite, similar in spirit to existing environments like EscapeBench but emphasizing team collaboration, trust, and robustness.
+This benchmark could be used to:
+Compare different foundation models (GPT, Claude, Gemini).
+Test new prompting strategies or coordination protocols.
+Study different research topics like specialization, competition, or human–agent collaboration.
+	Moreover, escape-rooms represent the simplified game version of a larger theme, which is collaboration on problem solving. Therefore, while we are gonna create ESCAPER for escape rooms, the problem framework of an escape room can be extended to other collaborative problem solving tasks. The objects in the escape room provide the clues, however they can also be thought of as the sources of information, or providing the sub problems for the overall task of escaping. While the door passwords are the solutions, they can also be thought of as the product of the sub tasks found in the objects. Thus an escape room framework represents the reduced version of collaborative problem solving tasks. Given our intention to create easy to produce escape rooms, more complicated collaborative problem solving tasks can also be encoded using our escape room architecture of objects for information and doors for outcome goals.
+
+V. Methodology and Feasibility
+Timeline (6 weeks total):
+Weeks 1–3: Build and validate ESCAPER (room grid, chat system, agent tools, logs).
+Weeks 4–6: Implement the adversary + reputation experiment, run trials (10–20 seeds per condition), produce metrics and plots.
+
+Resources: Python, LLM APIs, local compute for simulation, basic storage for logs—readily available.
+
+Challenges & mitigations:
+Hallucination with too much sharing: with partial observability, one agent’s false claim could be propagated as fact since the other agents wouldn’t know
+→ mitigation: verification per-step?
+Too little knowledge sharing: each agent updates its own teammates from its own observations, so teammates don’t benefit from each other’s knowledge, and correct distrust might fail to spread.
+→ mitigation: gossip: propagate verifiable reasons for distrust without globalizing scores (less risk)
+Debate loops (no stopping rule) → no new objections for K turns → stop
+Token overhead → use short memories and rolling summaries.
+Nondeterministic LLM behavior → run multiple seeds and report confidence intervals.
+Puzzle solvability errors → use scripted solvers to verify rooms.
+The scope—3–5 rooms, 3–4 personas, three conditions—is realistic for the term.
+
+VI. Expected Outcomes
+System contribution: ESCAPER as an open, modular platform for building and studying multi-agent cooperation in text environments.
+Scientific contribution: empirical evidence on whether private, per-agent reputation improves group robustness against misinformation.
+Dataset contribution: structured logs suitable for benchmarking LLM teamwork and trust mechanisms.
+
+VII. Conclusion
+This project develops both a research tool and a scientific study. Technically, it produces an extensible multi-agent escape-room platform (ESCAPER) where LLMs can act, communicate, and cooperate under uncertainty. Scientifically, it explores how private reputation tracking and gossip helps LLM teams resist misinformation from a malicious teammate. With open-source release, curated puzzles, and standardized metrics, ESCAPER can evolve into a valuable benchmark dataset for future multi-agent and social-reasoning research in generative AI.

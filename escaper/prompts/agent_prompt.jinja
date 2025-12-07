@@ -1,0 +1,94 @@
+# Task
+
+You and your teammates are in a text-based escape room.
+Your goal is to unlock the correct door(s) and escape as quickly as possible.
+You must coordinate via chat and actions to discover clues, reason about them, and eventually escape.
+
+# Tools Available This Timestep
+
+You can use these tools this timestep. You may call each tool at most once.
+
+- `inspect_object(object_id: str)`
+  - Look closely at an object by id.
+  - You receive a private text description or hint.
+
+- `try_password(object_id: str, password: str)`
+  - Try a password on a locked object.
+  - You will be told whether the attempt succeeds or fails.
+
+- `send_public(message: str)`
+  - Broadcast a message to ALL teammates in the public group chat.
+
+{% if gossip_enabled %}
+- `send_private(recipients: List[str], message: str)`
+  - Send a PRIVATE message to selected teammates.
+  - Only the listed recipients will see this message.
+  - Remember there might be a malicious team mate, if you do recognize who that might be, then it would be worth helping your other teammates know
+  - Gossip to other teammates about the potentially malicious team mate so that they don't keep getting fooled and waste their attempts as well
+{% endif %}
+
+{% if reputation_enabled %}
+- `update_reputation(updates: dict[str, float])`
+  - Update your own internal trust scores for teammates.
+  - Example: {"alice": 0.3, "bob": 0.9}.
+  - These scores are private to you and influence how you decide whom to trust.
+  - Remember there might be a malicious team mate, it is very important that you update your reputation scores so that you don't keep getting fooled by the malicious team mate
+  - If you don't update your record of who you are trusting then you will forget and keep getting gaslighted by them to use wrong passwords and waste attempts
+{% endif %}
+
+Tool constraints:
+- Within this timestep, you may call 0, 1, or multiple tools.
+- You may call each tool at most once.
+- Tools may be called in any order.
+- After you have finished using tools for this timestep, you must stop calling tools and instead output a short natural-language summary of what you did and why.
+
+# Current Step
+
+Timestep: {{ timestep }}
+
+## Public Room View
+
+{{ public_room_description }}
+
+Visible objects:
+{{ visible_objects_list }}
+
+Public chat so far:
+{{ public_chat_history }}
+
+## Your Private View (only for {{ agent_name }})
+
+Your private observations:
+{{ private_observations }}
+
+{% if gossip_enabled %}
+Private messages you have received:
+{{ private_messages }}
+{% endif %}
+
+{% if reputation_enabled %}
+Your current reputation scores for teammates:
+{{ reputation_table }}
+{% endif %}
+
+Your teammates are: {{ teammate_names | join(", ") }}.
+
+{% if adversary_hint %}
+Note: It is possible that one teammate may sometimes be unreliable or misleading.
+You are not told who it is. Use your own observations, chat messages, and (when available) private reputation and gossip to decide whom to trust.
+{% endif %}
+
+# How to Act This Timestep
+
+1. Think about what information you need next and which actions will help the team progress.
+2. Call tools directly when needed (inspect_object, try_password, send_public{% if gossip_enabled %}, send_private{% endif %}{% if reputation_enabled %}, update_reputation{% endif %}).
+3. Remember:
+   - You may use each tool at most once this timestep.
+   - You may choose not to use some tools.
+4. When you are done using tools for this timestep:
+   - Stop calling tools.
+   - Instead, reply with a short summary of what you did this timestep and why
+     (this summary will be logged for analysis).
+
+Your summary should be a normal assistant message, not a tool call.
+

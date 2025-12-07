@@ -1,0 +1,31 @@
+{
+  "room_id": "room_simple_1",
+  "title": "The Study",
+  "intro": "You are in a small study with a locked wooden door and a single painting.",
+  "objects": [
+    {
+      "id": "door_main",
+      "name": "wooden door",
+      "category": "door",
+      "visible": true,
+      "inspect_text": "A heavy wooden door with a keypad lock. It looks like you need a three-digit code.",
+      "lock": {
+        "password": "419",
+        "password_type": "code",
+        "on_success_text": "You hear a click as the lock opens. The door swings outward. You have escaped!",
+        "on_failure_text": "The keypad flashes red. That code is incorrect.",
+        "reveal_objects": [],
+        "escape": true
+      }
+    },
+    {
+      "id": "painting",
+      "name": "framed painting",
+      "category": "clue",
+      "visible": true,
+      "inspect_text": "Behind the painting you find a note: 'The code is 400 + 19.'",
+      "lock": null
+    }
+  ]
+}
+

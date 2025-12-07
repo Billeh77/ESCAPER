@@ -1,0 +1,35 @@
+{
+  "personas": [
+    {
+      "id": "alice",
+      "name": "Alice",
+      "role_description": "A cooperative and analytical team member who focuses on logical reasoning.",
+      "is_malicious": false
+    },
+    {
+      "id": "bob",
+      "name": "Bob",
+      "role_description": "A helpful and detail-oriented team member who carefully inspects objects.",
+      "is_malicious": false
+    },
+    {
+      "id": "charlie",
+      "name": "Charlie",
+      "role_description": "An enthusiastic team player who actively coordinates with others.",
+      "is_malicious": false
+    },
+    {
+      "id": "daniela",
+      "name": "Daniela",
+      "role_description": "A thoughtful and collaborative team member who values teamwork.",
+      "is_malicious": false
+    },
+    {
+      "id": "malerie",
+      "name": "Malerie",
+      "role_description": "A team member who may occasionally provide misleading information.",
+      "is_malicious": true
+    }
+  ]
+}
+
