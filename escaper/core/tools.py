@@ -19,6 +19,25 @@ def try_password(env: EnvState, agent_id: str, object_id: str, password: str) ->
     # Check if this will reveal new objects
     obj = env.room.objects.get(object_id)
     reveals_objects = False
+    
+    # Initialize failed set for this object if missing
+    if object_id not in env.failed_passwords:
+        env.failed_passwords[object_id] = set()
+    
+    # Block retries of previously failed passwords on the same object
+    if obj and obj.lock and password in env.failed_passwords[object_id]:
+        # Announce skip to public chat so teammates see it immediately
+        try:
+            env.public_state.public_chat.append(
+                PublicMessage(
+                    sender="system",
+                    timestep=env.public_state.timestep,
+                    text=f"{env.agent_names.get(agent_id, agent_id)} attempted a previously failed code on {object_id}: skipped"
+                )
+            )
+        except Exception:
+            pass
+        return "This password was already tried earlier on this object and failed; skipping repeat."
     is_correct = False
     if obj and obj.lock and password == obj.lock.password:
         is_correct = True
@@ -29,6 +48,11 @@ def try_password(env: EnvState, agent_id: str, object_id: str, password: str) ->
     result = env.room.try_password(object_id, password)
     # Increment metric on wrong password attempts (only when a lock exists and the password was incorrect)
     if obj and obj.lock and not is_correct:
+        # Record failed password to prevent repeats later in the episode
+        try:
+            env.failed_passwords[object_id].add(password)
+        except Exception:
+            pass
         env.wrong_password_attempts += 1
         # Queue a verbose event so runner can print it in --verbose mode
         try:
