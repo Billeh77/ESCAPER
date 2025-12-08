@@ -261,10 +261,16 @@ class Agent:
             for m in my_state.private_messages
         ) or "(none)"
         
+        # Display reputation using display names if available
         reputation_table = "\n".join(
-            f"- {other}: {score:.2f}"
+            f"- {env_state.agent_names.get(other, other)}: {score:.2f}"
             for other, score in my_state.reputation.items()
         ) or "(none)"
+        
+        # Use display names for teammates in prompt
+        teammate_display_names = [
+            env_state.agent_names.get(t, t) for t in teammates
+        ]
         
         return self.user_template.render(
             timestep=env_state.public_state.timestep,
@@ -275,7 +281,7 @@ class Agent:
             private_observations=private_observations,
             private_messages=private_messages,
             reputation_table=reputation_table,
-            teammate_names=teammates,
+            teammate_names=teammate_display_names,
             gossip_enabled=self.gossip_enabled,
             reputation_enabled=self.reputation_enabled,
             adversary_hint=adversary_hint,

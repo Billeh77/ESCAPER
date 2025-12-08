@@ -63,7 +63,13 @@ class SimulationRunner:
                 reputation=rep
             )
         
-        return EnvState(room=room, public_state=public_state, agent_states=agent_states)
+        agent_names = {cfg.agent_id: cfg.name for cfg in self.persona_configs}
+        return EnvState(
+            room=room,
+            public_state=public_state,
+            agent_states=agent_states,
+            agent_names=agent_names,
+        )
     
     def make_agents(self) -> Dict[str, Agent]:
         """Create agent instances for this episode."""

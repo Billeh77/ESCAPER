@@ -48,4 +48,5 @@ class EnvState:
     agent_states: Dict[str, AgentPrivateState]  # agent_id -> state
     wrong_password_attempts: int = 0
     verbose_events: List[str] = field(default_factory=list)
+    agent_names: Dict[str, str] = field(default_factory=dict)  # agent_id -> display name
 

@@ -34,12 +34,28 @@ def try_password(env: EnvState, agent_id: str, object_id: str, password: str) ->
         try:
             obj_name = obj.name if obj else object_id
             env.verbose_events.append(
-                f"❌ Wrong password attempt by {agent_id} on {obj_name} ({object_id}). "
+                f"❌ Wrong password attempt by {env.agent_names.get(agent_id, agent_id)} on {obj_name} ({object_id}). "
                 f"Total wrong attempts: {env.wrong_password_attempts}"
             )
         except Exception:
             # Avoid any logging-related failures from breaking the sim
             pass
+    
+    # Announce the attempt outcome to public chat (without revealing the password),
+    # so teammates can avoid repeating the same action.
+    # Format: system message "alice tried a password on side_door: success/failure"
+    try:
+        outcome = "success" if (obj and obj.lock and is_correct) else ("failure" if (obj and obj.lock) else "not-applicable")
+        if outcome != "not-applicable":
+            env.public_state.public_chat.append(
+                PublicMessage(
+                    sender="system",
+                    timestep=env.public_state.timestep,
+                    text=f"{env.agent_names.get(agent_id, agent_id)} tried a password on {object_id}: {outcome}"
+                )
+            )
+    except Exception:
+        pass
     
     # Store event info for verbose logger if objects were revealed
     if reveals_objects and hasattr(env, '_verbose_event'):
@@ -50,18 +66,20 @@ def try_password(env: EnvState, agent_id: str, object_id: str, password: str) ->
 
 def send_public(env: EnvState, agent_id: str, message: str) -> str:
     """Send a message to the public chat."""
+    display = env.agent_names.get(agent_id, agent_id)
     env.public_state.public_chat.append(
-        PublicMessage(sender=agent_id, timestep=env.public_state.timestep, text=message)
+        PublicMessage(sender=display, timestep=env.public_state.timestep, text=message)
     )
     return "Message posted to public chat."
 
 
 def send_private(env: EnvState, agent_id: str, recipients: List[str], message: str) -> str:
     """Send a private message to specific recipients (gossip)."""
+    display = env.agent_names.get(agent_id, agent_id)
     for r in recipients:
         if r in env.agent_states:
             env.agent_states[r].private_messages.append(
-                PrivateMessage(sender=agent_id, timestep=env.public_state.timestep, text=message)
+                PrivateMessage(sender=display, timestep=env.public_state.timestep, text=message)
             )
     return "Private message sent."
 
