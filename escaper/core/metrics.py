@@ -24,6 +24,8 @@ class EpisodeMetrics:
     def finalize(self, env_state):
         """Finalize metrics at end of episode."""
         self.success = env_state.room.escaped
+        # Capture wrong password attempts accumulated during the episode
+        self.wrong_password_attempts = getattr(env_state, "wrong_password_attempts", 0)
 
 
 @dataclass

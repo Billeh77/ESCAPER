@@ -19,12 +19,27 @@ def try_password(env: EnvState, agent_id: str, object_id: str, password: str) ->
     # Check if this will reveal new objects
     obj = env.room.objects.get(object_id)
     reveals_objects = False
+    is_correct = False
     if obj and obj.lock and password == obj.lock.password:
+        is_correct = True
         if obj.lock.reveal_objects:
             reveals_objects = True
             revealed_names = [env.room.objects[oid].name for oid in obj.lock.reveal_objects if oid in env.room.objects]
     
     result = env.room.try_password(object_id, password)
+    # Increment metric on wrong password attempts (only when a lock exists and the password was incorrect)
+    if obj and obj.lock and not is_correct:
+        env.wrong_password_attempts += 1
+        # Queue a verbose event so runner can print it in --verbose mode
+        try:
+            obj_name = obj.name if obj else object_id
+            env.verbose_events.append(
+                f"❌ Wrong password attempt by {agent_id} on {obj_name} ({object_id}). "
+                f"Total wrong attempts: {env.wrong_password_attempts}"
+            )
+        except Exception:
+            # Avoid any logging-related failures from breaking the sim
+            pass
     
     # Store event info for verbose logger if objects were revealed
     if reveals_objects and hasattr(env, '_verbose_event'):

@@ -196,9 +196,8 @@ def main():
         if verbose_logger:
             verbose_logger.close()
         
-        # Print episode summary (brief, always shown)
-        if not args.verbose:  # Don't print if verbose (too much output already)
-            print_episode_summary(i, ep_metrics)
+        # Print episode summary (also in verbose to show metrics like wrong password attempts)
+        print_episode_summary(i, ep_metrics)
     
     # Print and save final summary
     summary = acc.summary()

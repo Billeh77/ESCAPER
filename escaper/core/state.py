@@ -2,7 +2,10 @@
 """State management for the escape room environment."""
 
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .room import Room
 
 
 @dataclass
@@ -43,4 +46,6 @@ class EnvState:
     room: "Room"
     public_state: PublicState
     agent_states: Dict[str, AgentPrivateState]  # agent_id -> state
+    wrong_password_attempts: int = 0
+    verbose_events: List[str] = field(default_factory=list)
 

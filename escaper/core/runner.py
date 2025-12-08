@@ -143,6 +143,11 @@ class SimulationRunner:
                 # Print agent summary (verbose only)
                 if self.verbose_logger:
                     self.verbose_logger.print_agent_summary(cfg.name, summary)
+                    # Print any verbose events queued during the agent's actions
+                    if getattr(env_state, "verbose_events", None):
+                        for evt in env_state.verbose_events:
+                            self.verbose_logger.print_room_event(evt)
+                        env_state.verbose_events.clear()
                 
                 # Log summary
                 metrics.log_summary(agent_id, step, summary)
