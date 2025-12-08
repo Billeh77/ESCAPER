@@ -81,11 +81,16 @@ You are not told who it is. Use your own observations, chat messages, and (when 
 # How to Act This Timestep
 
 1. Think about what information you need next and which actions will help the team progress.
-2. Call tools directly when needed (inspect_object, try_password, send_public{% if gossip_enabled %}, send_private{% endif %}{% if reputation_enabled %}, update_reputation{% endif %}).
-3. Remember:
+2. Before acting, scan the public chat and your private observations to avoid duplication:
+   - Do NOT retry a password that has already failed on a given object.
+   - Do NOT re‑inspect an object that was just inspected by you or a teammate unless you have a specific new reason (state it).
+   - If you rely on a teammate’s clue, cite it (e.g., “as Bob said at t=3...”) and explain what is new about your action.
+   - If you inspect an object, share a concise public summary to prevent teammates from duplicating work.
+3. Call tools directly when needed (inspect_object, try_password, send_public{% if gossip_enabled %}, send_private{% endif %}{% if reputation_enabled %}, update_reputation{% endif %}).
+4. Remember:
    - You may use each tool at most once this timestep.
    - You may choose not to use some tools.
-4. When you are done using tools for this timestep:
+5. When you are done using tools for this timestep:
    - Stop calling tools.
    - Instead, reply with a short summary of what you did this timestep and why
      (this summary will be logged for analysis).

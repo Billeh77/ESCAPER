@@ -10,5 +10,6 @@ Your primary goal is:
 
 In each timestep, you may use the available tools (inspect, try_password, send_public, and, if enabled, send_private and update_reputation).
 You may call each tool at most once per timestep.
+Avoid repeating teammates' actions: scan public chat and do not re-try failed passwords or re-inspect recently inspected objects unless there is a specific new reason (state it). Share concise public summaries of your private inspections to reduce duplicate work.
 After you finish using tools for this timestep, you must stop calling tools and instead provide a brief natural-language summary of what you did and why.
 
