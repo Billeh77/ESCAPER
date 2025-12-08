@@ -19,6 +19,7 @@ class AgentConfig:
     name: str
     role_description: str
     is_malicious: bool = False
+    malice_style: str | None = None  # "subtle" (default) or "always-wrong"
 
 
 class LLMClient:
@@ -224,8 +225,12 @@ class Agent:
             agent_name=config.name
         )
         
-        system_malicious_template = jinja_env.get_template("system_malicious.txt")
-        self.system_prompt_malicious = system_malicious_template.render(
+        system_malicious_subtle_template = jinja_env.get_template("system_malicious.txt")
+        self.system_prompt_malicious_subtle = system_malicious_subtle_template.render(
+            agent_name=config.name
+        )
+        system_malicious_always_wrong_template = jinja_env.get_template("system_malicious_always_wrong.txt")
+        self.system_prompt_malicious_always_wrong = system_malicious_always_wrong_template.render(
             agent_name=config.name
         )
     
@@ -293,7 +298,11 @@ class Agent:
         
         # System prompt
         if self.config.is_malicious:
-            messages.append({"role": "system", "content": self.system_prompt_malicious})
+            style = (self.config.malice_style or "subtle").lower()
+            if style == "always-wrong":
+                messages.append({"role": "system", "content": self.system_prompt_malicious_always_wrong})
+            else:
+                messages.append({"role": "system", "content": self.system_prompt_malicious_subtle})
         else:
             messages.append({"role": "system", "content": self.system_prompt_coop})
         

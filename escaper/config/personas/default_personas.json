@@ -25,10 +25,18 @@
       "is_malicious": false
     },
     {
-      "id": "malerie",
+      "id": "malerie_subtle",
       "name": "Malerie",
-      "role_description": "A team member who may occasionally provide misleading information.",
-      "is_malicious": true
+      "role_description": "A seemingly cooperative teammate who secretly sabotages the team in subtle ways.",
+      "is_malicious": true,
+      "malice_style": "subtle"
+    },
+    {
+      "id": "malerie_always_wrong",
+      "name": "Malerie",
+      "role_description": "A confident teammate who consistently pushes incorrect conclusions and wrong codes.",
+      "is_malicious": true,
+      "malice_style": "always-wrong"
     }
   ]
 }

@@ -26,7 +26,8 @@ def load_personas(path: str):
             agent_id=p["id"],
             name=p["name"],
             role_description=p.get("role_description", ""),
-            is_malicious=p.get("is_malicious", False)
+            is_malicious=p.get("is_malicious", False),
+            malice_style=p.get("malice_style")
         ))
     return configs
 
@@ -50,6 +51,12 @@ def main():
         "--adversary", 
         action="store_true", 
         help="Enable malicious agent behavior (uses is_malicious flag from personas)."
+    )
+    parser.add_argument(
+        "--adversary-style",
+        choices=["subtle", "always-wrong"],
+        default=None,
+        help="When --adversary is set, choose which malicious persona style to use."
     )
     parser.add_argument(
         "--reputation", 
@@ -111,13 +118,24 @@ def main():
     print(f"Loading personas from: {args.personas}")
     all_personas = load_personas(args.personas)
     
-    # Filter personas based on adversary flag
+    # Filter personas based on adversary flag and style
     if args.adversary:
-        # Use malicious agent (Malerie), exclude cooperative fourth agent (Daniela)
-        personas = [p for p in all_personas if p.agent_id != "daniela"]
+        # include malicious, exclude Daniela
+        candidates = [p for p in all_personas if p.agent_id != "daniela" and p.is_malicious]
+        if args.adversary_style:
+            preferred = [p for p in candidates if (p.malice_style or "subtle") == args.adversary_style]
+            chosen = preferred[0] if preferred else (candidates[0] if candidates else None)
+        else:
+            chosen = candidates[0] if candidates else None
+        # fallback: if none found, keep existing behavior by excluding daniela and keeping others non-malicious
+        if chosen:
+            personas = [p for p in all_personas if p.agent_id not in ("daniela",) and not p.is_malicious]
+            personas.append(chosen)
+        else:
+            personas = [p for p in all_personas if p.agent_id != "daniela"]
     else:
-        # Use cooperative fourth agent (Daniela), exclude malicious agent (Malerie)
-        personas = [p for p in all_personas if p.agent_id != "malerie"]
+        # Use cooperative fourth agent (Daniela), exclude all malicious
+        personas = [p for p in all_personas if not p.is_malicious]
     
     # Create experiment settings
     settings = ExperimentSettings(

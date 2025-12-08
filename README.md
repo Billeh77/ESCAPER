@@ -117,6 +117,47 @@ python -m escaper.cli.run_experiment \
   --log-dir runs/full_experiment
 ```
 
+### Adversary Styles
+
+You can choose between two malicious behaviors:
+- Subtle (harder to detect): Mixes truth with lies to avoid detection
+- Always-wrong (obvious adversary): Consistently pushes incorrect information
+
+Why two styles (research rationale):
+Studying both strategies enables us to compare adversarial efficacy and detectability. An “always‑wrong” adversary maximizes direct sabotage but is easy to spot and discount; a “subtle” adversary blends in by mixing accurate information with targeted lies, which can be more damaging over time if teams fail to calibrate trust. Compare conditions on (a) wrong password attempts, (b) reputation/distrust dynamics, and (c) time-to-escape to evaluate whether persistent deception or infiltration via partial cooperation is more harmful to team performance.
+
+Run with explicit style selection:
+
+```bash
+# Subtle (no persona changes needed)
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --adversary-style subtle \
+  --seeds 1 --verbose
+```
+
+```bash
+# Always-wrong (requires a persona with malice_style=always-wrong)
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --adversary-style always-wrong \
+  --seeds 1 --verbose
+```
+
+To enable “always-wrong”, add a second malicious persona with a unique id:
+
+```json
+{
+  "id": "malerie_aw",
+  "name": "Malerie (AW)",
+  "role_description": "Aggressively misleading (always wrong).",
+  "is_malicious": true,
+  "malice_style": "always-wrong"
+}
+```
+
 ## CLI Arguments
 
 ### Required Arguments
@@ -129,10 +170,35 @@ python -m escaper.cli.run_experiment \
 - `--adversary`: Enable malicious agent behavior (uses `is_malicious` flag from personas)
 - `--reputation`: Enable private reputation tracking
 - `--gossip`: Enable private messaging between agents
+- `--adversary-style {subtle|always-wrong}`: Choose malicious behavior (requires a persona with matching `malice_style` for always-wrong)
 - `--max-steps INT`: Maximum timesteps per episode (default: 30)
 - `--seeds INT`: Number of independent episodes to run (default: 5)
 - `--model STRING`: OpenAI model name (default: gpt-4-turbo-preview)
 - `--log-dir PATH`: Directory to save logs and metrics
+
+## Metrics: Wrong Password Attempts
+
+- Tracked per episode; resets each episode and appears in the episode summary footer.
+- In verbose mode, every wrong attempt is printed immediately as a room event:
+  “❌ Wrong password attempt by AGENT on OBJECT (id). Total wrong attempts: N”
+
+Examples:
+
+```bash
+# Minimal footer (shows Wrong password attempts)
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_simple_1.json \
+  --adversary --seeds 1
+```
+
+```bash
+# Verbose (shows per-attempt events AND prints the episode summary at end)
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --seeds 1 --verbose
+```
 
 ## Creating New Rooms
 

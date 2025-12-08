@@ -140,6 +140,36 @@ python -m escaper.cli.run_experiment \
 ```
 **Team**: Alice, Bob, Charlie, Malerie (with trust and gossip enabled)
 
+### Choose Adversary Style
+```bash
+# Subtle (harder to detect; no persona edits needed)
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --adversary-style subtle \
+  --seeds 1 --verbose
+```
+
+```bash
+# Always-wrong (requires a persona with malice_style=always-wrong)
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --adversary-style always-wrong \
+  --seeds 1 --verbose
+```
+
+To enable “always-wrong”, add a second malicious persona to `escaper/config/personas/default_personas.json`:
+```json
+{
+  "id": "malerie_aw",
+  "name": "Malerie (AW)",
+  "role_description": "Aggressively misleading (always wrong).",
+  "is_malicious": true,
+  "malice_style": "always-wrong"
+}
+```
+
 ---
 
 ## Important: Future Sessions

@@ -79,6 +79,8 @@ python -m escaper.cli.run_experiment \
 - ✅ **Demonstrations** - Beautiful output for presentations
 - ✅ **Learning** - See how agents think and collaborate
 - ✅ **Trust dynamics** - Watch reputation evolve in real-time
+- ✅ **Error visibility** - Each wrong password attempt is printed immediately as a room event:
+  “❌ Wrong password attempt by AGENT on OBJECT (id). Total wrong attempts: N”
 - ❌ **Multiple episodes** - Too much output (use detailed-logs instead)
 
 ---
