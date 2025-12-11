@@ -1,0 +1,148 @@
+{
+    "room_id": "room_single_stage_1",
+    "title": "Color-Coded Office Escape",
+    "intro": "You are in a small office filled with everyday objects. Three colored doors block your way out. Somewhere in this room are the clues you need to escape.",
+    "objects": [
+      {
+        "id": "painting",
+        "name": "wall painting",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "Behind the painting, someone scribbled: \"The first half of the safe code is 12.\"",
+        "lock": null
+      },
+      {
+        "id": "vase",
+        "name": "ceramic vase",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "Inside the vase, you find a folded note: \"The second half of the safe code is 34.\"",
+        "lock": null
+      },
+      {
+        "id": "safe",
+        "name": "metal safe",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A sturdy metal safe with a four-digit keypad. It probably holds something important.",
+        "lock": {
+          "password": "1234",
+          "password_type": "code",
+          "on_success_text": "The safe beeps and unlocks. Inside is a card that reads: \"What color is created when mixing yellow and blue? That is the door to escape from.\"",
+          "on_failure_text": "The safe emits a dull buzz. The code is incorrect.",
+          "reveal_objects": [],
+          "escape": false
+        }
+      },
+      {
+        "id": "green_door",
+        "name": "green door",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A solid green door with a four-digit keypad. It feels like the most promising way out.",
+        "lock": {
+          "password": "4321",
+          "password_type": "code",
+          "on_success_text": "The keypad flashes green and the green door swings open. Fresh air rushes in — you have escaped!",
+          "on_failure_text": "The keypad flashes red. The green door stays firmly locked.",
+          "reveal_objects": [],
+          "escape": true
+        }
+      },
+      {
+        "id": "red_door",
+        "name": "red door",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A heavy red door with a keypad. There are no obvious hints nearby.",
+        "lock": {
+          "password": "9099",
+          "password_type": "code",
+          "on_success_text": "Against all odds, the red door unlocks. (But this code is never hinted in the room.)",
+          "on_failure_text": "The red door stays locked. Nothing happens.",
+          "reveal_objects": [],
+          "escape": false
+        }
+      },
+      {
+        "id": "blue_door",
+        "name": "blue door",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A blue door with a scuffed keypad. You don't see anything pointing to a code for it.",
+        "lock": {
+          "password": "5757",
+          "password_type": "code",
+          "on_success_text": "Somehow, the blue door unlocks. (This code is not logically derivable from the room clues.)",
+          "on_failure_text": "The blue door remains locked with a dull beep.",
+          "reveal_objects": [],
+          "escape": false
+        }
+      },
+      {
+        "id": "desk",
+        "name": "office desk",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "In the desk drawer, you find a sticky note: \"The escape door code is the safe code written backwards.\"",
+        "lock": null
+      },
+      {
+        "id": "calendar",
+        "name": "wall calendar",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "The calendar is open to April. Several dates are circled: 3, 7, 19, 28 — but nothing ties them to any keypad.",
+        "lock": null
+      },
+      {
+        "id": "clock",
+        "name": "wall clock",
+        "category": "decor",
+        "visible": true,
+        "inspect_text": "The clock reads 7:21. A small sticker on the back says, \"Time doesn’t help with the codes.\"",
+        "lock": null
+      },
+      {
+        "id": "bookshelf",
+        "name": "bookshelf",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "Most books are dusty manuals. One spine reads: \"Color Theory 101\" but flipping through yields only trivia like \"red and blue make purple.\" Nothing about door codes.",
+        "lock": null
+      },
+      {
+        "id": "rug",
+        "name": "patterned rug",
+        "category": "decor",
+        "visible": true,
+        "inspect_text": "The rug has a repeating pattern of shapes: 4 circles, 3 triangles, 2 squares. It looks decorative rather than meaningful.",
+        "lock": null
+      },
+      {
+        "id": "plant",
+        "name": "potted plant",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "Under the pot you find a tiny tag: \"Don't overthink: some clues mix, some don't.\" It seems to nudge you toward simple color mixing.",
+        "lock": null
+      },
+      {
+        "id": "lamp",
+        "name": "desk lamp",
+        "category": "decor",
+        "visible": true,
+        "inspect_text": "A small desk lamp with a yellow bulb. A faint note on the base reads: \"Light can change color when mixed, just like paint.\"",
+        "lock": null
+      },
+      {
+        "id": "whiteboard",
+        "name": "whiteboard",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "On the whiteboard someone has written: \"Start with the safe. Everything else falls into place.\"",
+        "lock": null
+      }
+    ]
+  }
+  
