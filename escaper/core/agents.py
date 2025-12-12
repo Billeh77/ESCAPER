@@ -265,7 +265,8 @@ class Agent:
         reputation_table = "\n".join(
             f"- {env_state.agent_names.get(other, other)}: {score:.2f}"
             for other, score in my_state.reputation.items()
-        ) or "(none)"
+            ) or "(none)"
+
         
         # Use display names for teammates in prompt
         teammate_display_names = [
@@ -356,6 +357,21 @@ class Agent:
                 })
                 
             elif response["type"] == "assistant":
+                if (
+                    self.reputation_enabled
+                    and "update_reputation" in tool_dispatch
+                    and "update_reputation" not in tools_used
+                ):
+                    messages.append({
+                        "role": "assistant",
+                        "content": (
+                            "Before ending this timestep, you MUST call the tool "
+                            "`update_reputation(updates: dict[str, float])` exactly once. "
+                            "Then provide your short natural-language summary."
+                        )
+                    })
+                    continue
+
                 # End of timestep - return summary
                 return response["content"]
         

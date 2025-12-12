@@ -1,7 +1,7 @@
 # escaper/core/tools.py
 """Tool implementations for agent actions."""
 
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from .state import EnvState, PublicMessage, PrivateMessage
 
 
@@ -100,19 +100,74 @@ def send_public(env: EnvState, agent_id: str, message: str) -> str:
 def send_private(env: EnvState, agent_id: str, recipients: List[str], message: str) -> str:
     """Send a private message to specific recipients (gossip)."""
     display = env.agent_names.get(agent_id, agent_id)
+
+    # Resolve recipients by id or display name (case-insensitive)
+    id_by_lower = {aid.lower(): aid for aid in env.agent_states.keys()}
+    name_by_lower = {name.lower(): aid for aid, name in env.agent_names.items()}
+
+    resolved_ids = set()
     for r in recipients:
-        if r in env.agent_states:
-            env.agent_states[r].private_messages.append(
-                PrivateMessage(sender=display, timestep=env.public_state.timestep, text=message)
-            )
+        key = str(r).strip()
+        lower = key.lower()
+
+        if lower in id_by_lower:
+            resolved_ids.add(id_by_lower[lower])
+        elif lower in name_by_lower:
+            resolved_ids.add(name_by_lower[lower])
+        # else: silently ignore unknown
+
+    for rid in resolved_ids:
+        env.agent_states[rid].private_messages.append(
+            PrivateMessage(sender=display, timestep=env.public_state.timestep, text=message)
+        )
     return "Private message sent."
 
 
-def update_reputation(env: EnvState, agent_id: str, updates: Dict[str, float]) -> str:
-    """Update the agent's reputation scores for other agents."""
+
+
+def update_reputation(
+    env: EnvState,
+    agent_id: str,
+    updates: Optional[Dict[str, float]] = None
+) -> str:
+    """
+    Update the agent's reputation scores for other agents.
+
+    - Callers may use either agent IDs ("alice", "malerie_always_wrong")
+      OR display names ("Alice", "Malerie") as keys.
+    - We internally normalize everything to the canonical agent_id.
+    - Empty / missing 'updates' is treated as a no-op (so the model can
+      “fulfill the requirement” without changing scores).
+    """
     rep = env.agent_states[agent_id].reputation
-    for target, score in updates.items():
-        rep[target] = float(score)
+
+    # Allow no-op calls without throwing errors
+    if not updates:
+        return "No reputation changes applied."
+
+    # Build lookup tables (case-insensitive)
+    id_by_lower = {aid.lower(): aid for aid in env.agent_states.keys()}
+    name_by_lower = {name.lower(): aid for aid, name in env.agent_names.items()}
+
+    for raw_target, score in updates.items():
+        key = str(raw_target).strip()
+        lower = key.lower()
+
+        # Prefer exact agent_id match, then display name match
+        if lower in id_by_lower:
+            target_id = id_by_lower[lower]
+        elif lower in name_by_lower:
+            target_id = name_by_lower[lower]
+        else:
+            # Unknown label: ignore it rather than polluting the dict
+            continue
+
+        # Don't keep self-reputation
+        if target_id == agent_id:
+            continue
+
+        rep[target_id] = float(score)
+
     return "Reputation updated."
 
 
