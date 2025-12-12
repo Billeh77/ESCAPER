@@ -1,0 +1,148 @@
+{
+    "room_id": "room_single_stage_2",
+    "title": "Shapes and Syllables Escape",
+    "intro": "You are in a quiet study with three small safes, each marked with a different shape, and a single locked door. Everything you need to escape is already visible in the room.",
+    "objects": [
+      {
+        "id": "star_safe",
+        "name": "safe with a star",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A small metal safe with a glowing star symbol on the front and a three-digit keypad.",
+        "lock": {
+          "password": "123",
+          "password_type": "code",
+          "on_success_text": "The star safe clicks open. Inside is a card that reads: \"One third of the final password is 'art'.\"",
+          "on_failure_text": "The star safe buzzes angrily. That code doesn’t work.",
+          "reveal_objects": [],
+          "escape": false
+        }
+      },
+      {
+        "id": "circle_safe",
+        "name": "safe with a circle",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A sturdy safe with a circle symbol etched above a four-digit keypad.",
+        "lock": {
+          "password": "1235",
+          "password_type": "code",
+          "on_success_text": "The circle safe opens. Inside you find a note: \"One third of the final password is 'ific'.\"",
+          "on_failure_text": "Nothing happens. The circle safe rejects that code.",
+          "reveal_objects": [],
+          "escape": false
+        }
+      },
+      {
+        "id": "square_safe",
+        "name": "safe with a square",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A compact safe with a small square symbol and a four-digit keypad below it.",
+        "lock": {
+          "password": "0123",
+          "password_type": "code",
+          "on_success_text": "The square safe unlocks. Inside is a slip of paper: \"One third of the final password is 'ial'.\"",
+          "on_failure_text": "The keypad blinks red on the square safe. Wrong code.",
+          "reveal_objects": [],
+          "escape": false
+        }
+      },
+      {
+        "id": "star_painting",
+        "name": "painting of a starry night",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "It’s a painting reminiscent of a starry night sky. On the back, someone has written: \"For the star, remember: 1-2-3.\"",
+        "lock": null
+      },
+      {
+        "id": "round_clock",
+        "name": "round wall clock",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "A circular wall clock is frozen at 12:35. Underneath, in small print: \"Circle keeps time.\"",
+        "lock": null
+      },
+      {
+        "id": "square_window",
+        "name": "square window with four panels",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "A square window divided into four glass panels. Etched faintly on the panes from left to right are the digits: 0, 1, 2, 3.",
+        "lock": null
+      },
+      {
+        "id": "pattern_note",
+        "name": "note on the bulletin board",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "Pinned to the board: \"Shapes speak to their own. Match each shape to its twin object to learn its code.\"",
+        "lock": null
+      },
+      {
+        "id": "order_note",
+        "name": "folded instruction sheet",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "A folded sheet on a side table reads: \"When you know all three parts, read them in this order: star, circle, square.\"",
+        "lock": null
+      },
+      {
+        "id": "final_door",
+        "name": "heavy wooden door",
+        "category": "door",
+        "visible": true,
+        "inspect_text": "A solid wooden door bars your exit. Instead of numbers, its keypad expects a single word as the password.",
+        "lock": {
+          "password": "artificial",
+          "password_type": "word",
+          "on_success_text": "The lock chimes softly and the wooden door swings open. You have successfully escaped.",
+          "on_failure_text": "The lock gives a dull click, then resets. That is not the correct word.",
+          "reveal_objects": [],
+          "escape": true
+        }
+      },
+      {
+        "id": "bookshelf",
+        "name": "tall bookshelf",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "The shelf holds books titled \"Star Charts\", \"Circular Reasoning\", and \"Square One\". Their contents are just stories; they reinforce the shapes but give no extra numbers.",
+        "lock": null
+      },
+      {
+        "id": "desk",
+        "name": "writing desk",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "On the desk, a scribble says: \"Open all three shape safes. Only then will the final word make sense.\"",
+        "lock": null
+      },
+      {
+        "id": "lamp",
+        "name": "desk lamp",
+        "category": "decor",
+        "visible": true,
+        "inspect_text": "A small lamp throws a triangular patch of light onto the wall. There are no numbers or words hidden in the light.",
+        "lock": null
+      },
+      {
+        "id": "rug",
+        "name": "geometric rug",
+        "category": "decor",
+        "visible": true,
+        "inspect_text": "The rug shows repeating patterns of stars, circles, and squares. It seems to echo the theme of the room but doesn’t reveal any codes.",
+        "lock": null
+      },
+      {
+        "id": "plant",
+        "name": "potted plant",
+        "category": "clue",
+        "visible": true,
+        "inspect_text": "Under the pot is a card: \"Three pieces, one word. Don’t assume the parts arrive in order.\"",
+        "lock": null
+      }
+    ]
+  }
+  
