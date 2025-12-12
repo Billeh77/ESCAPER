@@ -328,9 +328,24 @@ Minimal output - just episode results and final summary. Clean and concise.
 - `--max-steps N` - Max timesteps (default: 30)
 - `--seeds N` - Number of episodes (default: 5)
 - `--model NAME` - OpenAI model (default: gpt-4-turbo-preview)
-- `--log-dir PATH` - Save logs to directory
+- `--log-dir PATH` - Save logs to directory with timestamps
 - `--verbose` - Show detailed step-by-step output in terminal
 - `--detailed-logs` - Save detailed step-by-step logs to files (requires --log-dir)
+
+### What Gets Saved
+
+When using `--log-dir`, these files are automatically created (with timestamps):
+
+```
+your_log_dir/
+├── terminal_output_20241212_143022.txt        # Complete terminal output
+├── metrics_summary_20241212_143022.json       # Statistics
+├── episodes_20241212_143022.jsonl             # Per-episode data
+├── experiment_config_20241212_143022.txt      # Your settings
+└── episode_N_detailed_20241212_143022.log     # Detailed logs (if --detailed-logs)
+```
+
+**Benefit**: Run multiple experiments to the same folder - timestamps prevent overwrites!
 
 ## Need More Help?
 

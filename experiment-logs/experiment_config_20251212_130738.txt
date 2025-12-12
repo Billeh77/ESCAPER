@@ -1,0 +1,15 @@
+ESCAPER Experiment Configuration
+============================================================
+Timestamp: 20251212_130738
+Room: escaper/config/rooms/room_simple_1.json
+Personas: escaper/config/personas/default_personas.json
+Adversary enabled: True
+Adversary style: always-wrong
+Reputation enabled: True
+Gossip enabled: True
+Max steps: 30
+Seeds: 1
+Model: gpt-4-turbo-preview
+Verbose: True
+Detailed logs: False
+============================================================

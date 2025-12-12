@@ -1,6 +1,37 @@
 # ESCAPER Changelog
 
-## Version 0.1.2 (Current)
+## Version 0.1.3 (Current)
+
+### New Features
+
+#### Automatic Terminal Output Capture
+- **Complete output saved**: When using `--log-dir`, all terminal output is automatically saved to `terminal_output_YYYYMMDD_HHMMSS.txt`
+- **No truncation**: Even if terminal buffer is limited, complete output is preserved
+- **Transparent**: Output appears in terminal AND is saved to file simultaneously
+- **Solves**: Long experiments where terminal output gets trimmed
+
+#### Timestamped Filenames
+- **All saved files** now include timestamp: `YYYYMMDD_HHMMSS` (Year Month Day _ Hour Minute Second)
+- **Multiple experiments** can be saved to same directory without overwriting
+- **Easy navigation**: Sort by timestamp to see chronological order
+- **Files affected**:
+  - `terminal_output_YYYYMMDD_HHMMSS.txt` (NEW)
+  - `metrics_summary_YYYYMMDD_HHMMSS.json`
+  - `episodes_YYYYMMDD_HHMMSS.jsonl`
+  - `experiment_config_YYYYMMDD_HHMMSS.txt` (NEW)
+  - `episode_N_detailed_YYYYMMDD_HHMMSS.log`
+
+#### Experiment Configuration File
+- **Automatic documentation**: Creates `experiment_config_YYYYMMDD_HHMMSS.txt` with all settings
+- **Tracks**: Room, personas, flags, model, seeds, etc.
+- **Easy reference**: No need to remember what settings you used
+
+#### Implementation
+- TeeOutput class captures stdout to both terminal and file
+- Timestamp generated once at start, used consistently across all files
+- Graceful cleanup ensures files are properly closed
+
+## Version 0.1.2
 
 ### New Features
 

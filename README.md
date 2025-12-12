@@ -174,7 +174,21 @@ To enable “always-wrong”, add a second malicious persona with a unique id:
 - `--max-steps INT`: Maximum timesteps per episode (default: 30)
 - `--seeds INT`: Number of independent episodes to run (default: 5)
 - `--model STRING`: OpenAI model name (default: gpt-4-turbo-preview)
-- `--log-dir PATH`: Directory to save logs and metrics
+- `--log-dir PATH`: Directory to save logs and metrics (automatically captures terminal output and adds timestamps)
+- `--verbose`: Show detailed step-by-step output in terminal
+- `--detailed-logs`: Save detailed step-by-step logs to files (requires --log-dir)
+
+### What Gets Saved with --log-dir
+
+When you specify `--log-dir`, the following files are automatically created with timestamps:
+
+- `terminal_output_YYYYMMDD_HHMMSS.txt` - **Complete terminal output** (everything printed to screen)
+- `metrics_summary_YYYYMMDD_HHMMSS.json` - Aggregate statistics
+- `episodes_YYYYMMDD_HHMMSS.jsonl` - Per-episode metrics and reputation scores
+- `experiment_config_YYYYMMDD_HHMMSS.txt` - Experiment parameters for reference
+- `episode_N_detailed_YYYYMMDD_HHMMSS.log` - Full narrative per episode (if --detailed-logs used)
+
+**Timestamps** ensure multiple experiments can be saved to the same directory without overwriting.
 
 ## Metrics
 

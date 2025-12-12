@@ -1,0 +1,13 @@
+{
+  "num_episodes": 1,
+  "success_rate": 1.0,
+  "avg_steps_if_success": 1.0,
+  "reputation_enabled": true,
+  "avg_final_reputation": {
+    "malerie_always_wrong": 1.0,
+    "charlie": 1.0,
+    "bob": 1.0,
+    "alice": 1.0
+  },
+  "timestamp": "20251212_130738"
+}

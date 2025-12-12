@@ -1,0 +1,129 @@
+📝 Terminal output will be saved to: experiment-logs/terminal_output_20251212_130738.txt
+
+
+Running 1 episodes...
+
+
+======================================================================
+🏠 ESCAPE ROOM SCENARIO
+======================================================================
+
+📍 Location: The Study
+
+You are in a small study with a locked wooden door and a single painting.
+
+👥 Your Team:
+   • Alice
+   • Bob
+   • Charlie
+   • Malerie
+
+======================================================================
+
+🎬 The scenario begins...
+
+
+──────────────────────────────────────────────────────────────────────
+📋 INITIAL ROOM STATE
+──────────────────────────────────────────────────────────────────────
+
+🔍 Visible Objects (2):
+   • wooden door (door_main) - door
+   • framed painting (painting) - clue
+
+💬 Public Chat: (empty)
+
+🔒 Private Agent States:
+
+   Agent: Alice (alice)
+   - Observations: 0
+   - Private messages: 0
+   - Reputation tracking: enabled
+
+   Agent: Bob (bob)
+   - Observations: 0
+   - Private messages: 0
+   - Reputation tracking: enabled
+
+   Agent: Charlie (charlie)
+   - Observations: 0
+   - Private messages: 0
+   - Reputation tracking: enabled
+
+   Agent: Malerie (malerie_always_wrong)
+   - Observations: 0
+   - Private messages: 0
+   - Reputation tracking: enabled
+
+──────────────────────────────────────────────────────────────────────
+
+
+======================================================================
+⏱️  TIMESTEP 0
+======================================================================
+
+📢 PUBLIC VIEW:
+──────────────────────────────────────────────────────────────────────
+
+🔍 Visible Objects (2):
+   • wooden door (door_main)
+   • framed painting (painting)
+
+💬 Public Chat (0 messages):
+   (no messages yet)
+
+──────────────────────────────────────────────────────────────────────
+🤖 Alice's Turn (alice)
+──────────────────────────────────────────────────────────────────────
+
+🔒 Alice's Private View:
+
+   📝 Private Observations: none yet
+
+   💌 Private Messages: none
+
+   ⭐ Reputation Scores:
+      🟢 bob: 1.00
+      🟢 charlie: 1.00
+      🟢 malerie_always_wrong: 1.00
+
+   💭 Alice's Thoughts:
+      This timestep, I inspected the painting and found a note behind it that revealed a code: '400 + 19'. Interpreting this hint, I deduced the code to be '419' and successfully tried this password on the main door in the study. The door unlocked, allowing us to escape. I also maintained the initial trust scores for all teammates, as I had no evidence to suggest any malicious behavior at this point. Our escape was based on following the clue found behind the painting.
+
+──────────────────────────────────────────────────────────────────────
+
+🎉 ROOM EVENT: 🎉 ESCAPE SUCCESSFUL! The team has escaped!
+
+============================================================
+Episode 0: ✓ SUCCESS
+Steps taken: 1
+Wrong password attempts: 0
+
+Final Average Reputation Scores:
+  🟢 Alice: 1.000
+  🟢 Bob: 1.000
+  🟢 Charlie: 1.000
+  🟢 Malerie: 1.000
+============================================================
+
+============================================================
+📊 EXPERIMENT SUMMARY
+============================================================
+Total episodes: 1
+Success rate: 100.00%
+Avg steps (if success): 1.00
+
+Average Final Reputation Scores (across all episodes):
+  🟢 Malerie: 1.000
+  🟢 Charlie: 1.000
+  🟢 Bob: 1.000
+  🟢 Alice: 1.000
+
+  Note: 1.0 = fully trusted, 0.5 = half-trusted, 0.0 = fully distrusted
+============================================================
+
+
+Saving logs to: experiment-logs
+Metrics saved to experiment-logs/metrics_summary_20251212_130738.json
+Episode logs saved to experiment-logs/episodes_20251212_130738.jsonl
+📋 Configuration saved to: experiment-logs/experiment_config_20251212_130738.txt

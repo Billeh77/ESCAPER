@@ -4,6 +4,7 @@
 import argparse
 import os
 import sys
+from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 from escaper.core.room import Room
@@ -182,6 +183,35 @@ def main():
         print("Error: --detailed-logs requires --log-dir to be set.", file=sys.stderr)
         sys.exit(1)
     
+    # Generate timestamp for unique filenames
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Set up output capture if log-dir is specified
+    terminal_output_file = None
+    original_stdout = sys.stdout
+    
+    if args.log_dir:
+        os.makedirs(args.log_dir, exist_ok=True)
+        # Create a file to capture all terminal output
+        terminal_output_path = os.path.join(args.log_dir, f"terminal_output_{timestamp}.txt")
+        terminal_output_file = open(terminal_output_path, 'w', encoding='utf-8')
+        
+        # Create a tee-like class that writes to both terminal and file
+        class TeeOutput:
+            def __init__(self, *files):
+                self.files = files
+            def write(self, data):
+                for f in self.files:
+                    f.write(data)
+                    f.flush()
+            def flush(self):
+                for f in self.files:
+                    f.flush()
+        
+        # Redirect stdout to both terminal and file
+        sys.stdout = TeeOutput(original_stdout, terminal_output_file)
+        print(f"📝 Terminal output will be saved to: {terminal_output_path}\n")
+    
     # Run episodes
     print(f"\nRunning {args.seeds} episodes...\n")
     seeds = list(range(args.seeds))
@@ -193,7 +223,7 @@ def main():
         if args.verbose or args.detailed_logs:
             log_file = None
             if args.detailed_logs:
-                log_file = os.path.join(args.log_dir, f"episode_{i}_detailed.log")
+                log_file = os.path.join(args.log_dir, f"episode_{i}_detailed_{timestamp}.log")
             verbose_logger = VerboseLogger(enabled=args.verbose, log_file=log_file)
         
         # Create runner with verbose logger
@@ -226,8 +256,35 @@ def main():
     # Save logs if requested
     if args.log_dir:
         print(f"\nSaving logs to: {args.log_dir}")
-        save_metrics_summary(summary, args.log_dir)
-        save_episode_logs(acc.episodes, args.log_dir)
+        save_metrics_summary(summary, args.log_dir, timestamp=timestamp)
+        save_episode_logs(acc.episodes, args.log_dir, timestamp=timestamp)
+        
+        # Save experiment configuration
+        config_path = os.path.join(args.log_dir, f"experiment_config_{timestamp}.txt")
+        with open(config_path, 'w') as f:
+            f.write("ESCAPER Experiment Configuration\n")
+            f.write("=" * 60 + "\n")
+            f.write(f"Timestamp: {timestamp}\n")
+            f.write(f"Room: {args.room}\n")
+            f.write(f"Personas: {args.personas}\n")
+            f.write(f"Adversary enabled: {args.adversary}\n")
+            if args.adversary and args.adversary_style:
+                f.write(f"Adversary style: {args.adversary_style}\n")
+            f.write(f"Reputation enabled: {args.reputation}\n")
+            f.write(f"Gossip enabled: {args.gossip}\n")
+            f.write(f"Max steps: {args.max_steps}\n")
+            f.write(f"Seeds: {args.seeds}\n")
+            f.write(f"Model: {args.model}\n")
+            f.write(f"Verbose: {args.verbose}\n")
+            f.write(f"Detailed logs: {args.detailed_logs}\n")
+            f.write("=" * 60 + "\n")
+        print(f"📋 Configuration saved to: {config_path}")
+    
+    # Close terminal output file if it was opened
+    if terminal_output_file:
+        sys.stdout = original_stdout  # Restore original stdout
+        terminal_output_file.close()
+        print(f"✓ Complete terminal output saved to: {terminal_output_path}")
     
     print("\nExperiment complete!")
 

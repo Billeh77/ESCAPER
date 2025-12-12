@@ -7,10 +7,17 @@ from typing import List, Dict, Any
 from datetime import datetime
 
 
-def save_metrics_summary(summary: Dict[str, Any], log_dir: str):
+def save_metrics_summary(summary: Dict[str, Any], log_dir: str, timestamp: str = None):
     """Save aggregate metrics to a JSON file."""
     os.makedirs(log_dir, exist_ok=True)
-    path = os.path.join(log_dir, "metrics_summary.json")
+    
+    # Use timestamp in filename if provided
+    if timestamp:
+        filename = f"metrics_summary_{timestamp}.json"
+    else:
+        filename = "metrics_summary.json"
+    
+    path = os.path.join(log_dir, filename)
     
     # Make sure all values are JSON serializable
     json_safe_summary = {
@@ -21,16 +28,27 @@ def save_metrics_summary(summary: Dict[str, Any], log_dir: str):
         "avg_final_reputation": summary.get("avg_final_reputation", {}),
     }
     
+    # Add timestamp to the summary data itself
+    if timestamp:
+        json_safe_summary["timestamp"] = timestamp
+    
     with open(path, "w") as f:
         json.dump(json_safe_summary, f, indent=2)
     
     print(f"Metrics saved to {path}")
 
 
-def save_episode_logs(episodes: List["EpisodeMetrics"], log_dir: str):
+def save_episode_logs(episodes: List["EpisodeMetrics"], log_dir: str, timestamp: str = None):
     """Save per-episode logs to JSONL."""
     os.makedirs(log_dir, exist_ok=True)
-    path = os.path.join(log_dir, "episodes.jsonl")
+    
+    # Use timestamp in filename if provided
+    if timestamp:
+        filename = f"episodes_{timestamp}.jsonl"
+    else:
+        filename = "episodes.jsonl"
+    
+    path = os.path.join(log_dir, filename)
     
     with open(path, "w") as f:
         for i, ep in enumerate(episodes):
@@ -43,6 +61,8 @@ def save_episode_logs(episodes: List["EpisodeMetrics"], log_dir: str):
                 "reputation_enabled": ep.reputation_enabled,
                 "final_reputation_scores": ep.final_reputation_scores,
             }
+            if timestamp:
+                record["timestamp"] = timestamp
             f.write(json.dumps(record) + "\n")
     
     print(f"Episode logs saved to {path}")

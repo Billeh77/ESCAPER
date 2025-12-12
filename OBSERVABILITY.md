@@ -105,12 +105,14 @@ python -m escaper.cli.run_experiment \
 
 ### Output Files
 
-Creates in your `--log-dir`:
-- `episode_0_detailed.log` - Full narrative for episode 0
-- `episode_1_detailed.log` - Full narrative for episode 1
+Creates in your `--log-dir` (with timestamps for uniqueness):
+- `terminal_output_YYYYMMDD_HHMMSS.txt` - Complete terminal output
+- `episode_0_detailed_YYYYMMDD_HHMMSS.log` - Full narrative for episode 0
+- `episode_1_detailed_YYYYMMDD_HHMMSS.log` - Full narrative for episode 1
 - ... (one per seed)
-- `metrics_summary.json` - Aggregate statistics
-- `episodes.jsonl` - Per-episode metrics
+- `metrics_summary_YYYYMMDD_HHMMSS.json` - Aggregate statistics
+- `episodes_YYYYMMDD_HHMMSS.jsonl` - Per-episode metrics
+- `experiment_config_YYYYMMDD_HHMMSS.txt` - Experiment parameters
 
 ### When to Use
 
@@ -276,9 +278,11 @@ done
 
 ### Want to save verbose output
 
-**Solution**: Either:
-- Use `--detailed-logs` instead of `--verbose`
-- Or redirect output: `... --verbose > output.log 2>&1`
+**Solution**: Use `--log-dir` - it automatically saves complete terminal output to `terminal_output_YYYYMMDD_HHMMSS.txt`! No need for manual redirection.
+
+### Terminal output gets trimmed/cut off
+
+**Solution**: When using `--log-dir`, all terminal output is automatically saved to `terminal_output_YYYYMMDD_HHMMSS.txt`. You can review the complete output even if your terminal buffer is limited.
 
 ### Logs are huge
 
