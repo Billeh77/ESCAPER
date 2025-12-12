@@ -5,7 +5,8 @@ from dataclasses import dataclass
 from typing import List, Dict, Any, Callable, Optional
 from jinja2 import Environment
 import os
-from openai import OpenAI
+import time
+from openai import OpenAI, RateLimitError, APIError, APIConnectionError, APITimeoutError
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -170,33 +171,81 @@ class OpenAILLMClient(LLMClient):
         messages: List[Dict[str, str]], 
         tools: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Call OpenAI API with tool support."""
+        """
+        Call OpenAI API with tool support and automatic retry logic.
+        
+        Handles rate limits and transient errors with exponential backoff.
+        """
         tool_defs = self._build_tool_definitions(tools)
         
-        response = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            tools=tool_defs if tool_defs else None,
-            tool_choice="auto" if tool_defs else None,
-        )
+        # Retry configuration
+        max_retries = 5
+        base_delay = 1  # seconds
+        max_delay = 60  # seconds
         
-        message = response.choices[0].message
+        for attempt in range(max_retries):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=messages,
+                    tools=tool_defs if tool_defs else None,
+                    tool_choice="auto" if tool_defs else None,
+                )
+                
+                message = response.choices[0].message
+                
+                # Check if it's a tool call
+                if message.tool_calls:
+                    tool_call = message.tool_calls[0]
+                    import json
+                    return {
+                        "type": "tool",
+                        "tool_name": tool_call.function.name,
+                        "arguments": json.loads(tool_call.function.arguments)
+                    }
+                else:
+                    # Regular assistant message
+                    return {
+                        "type": "assistant",
+                        "content": message.content or ""
+                    }
+            
+            except RateLimitError as e:
+                if attempt < max_retries - 1:
+                    # Calculate delay with exponential backoff
+                    delay = min(base_delay * (2 ** attempt), max_delay)
+                    print(f"\n⚠️  Rate limit hit. Retrying in {delay:.1f}s... (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(delay)
+                else:
+                    print(f"\n❌ Rate limit error after {max_retries} attempts. Please try again later or reduce request rate.")
+                    raise
+            
+            except (APIConnectionError, APITimeoutError) as e:
+                if attempt < max_retries - 1:
+                    delay = min(base_delay * (2 ** attempt), max_delay)
+                    print(f"\n⚠️  Connection error: {type(e).__name__}. Retrying in {delay:.1f}s... (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(delay)
+                else:
+                    print(f"\n❌ Connection error after {max_retries} attempts.")
+                    raise
+            
+            except APIError as e:
+                # For server errors (5xx), retry
+                if attempt < max_retries - 1 and e.status_code and e.status_code >= 500:
+                    delay = min(base_delay * (2 ** attempt), max_delay)
+                    print(f"\n⚠️  Server error (status {e.status_code}). Retrying in {delay:.1f}s... (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(delay)
+                else:
+                    # For client errors (4xx) or after max retries, don't retry
+                    raise
+            
+            except Exception as e:
+                # For unexpected errors, don't retry
+                print(f"\n❌ Unexpected error: {type(e).__name__}: {str(e)}")
+                raise
         
-        # Check if it's a tool call
-        if message.tool_calls:
-            tool_call = message.tool_calls[0]
-            import json
-            return {
-                "type": "tool",
-                "tool_name": tool_call.function.name,
-                "arguments": json.loads(tool_call.function.arguments)
-            }
-        else:
-            # Regular assistant message
-            return {
-                "type": "assistant",
-                "content": message.content or ""
-            }
+        # Should not reach here, but just in case
+        raise Exception("Max retries exceeded")
 
 
 class Agent:

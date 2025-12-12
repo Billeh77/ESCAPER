@@ -28,6 +28,7 @@ The platform supports four experimental conditions to study how agents develop t
 - **Extensible Design**: Easy to create new rooms and personas via JSON
 - **Rich Logging**: Complete trajectories and metrics for analysis
 - **Full Observability**: Verbose mode shows real-time step-by-step narrative with agent thoughts and actions
+- **Robust Error Handling**: Automatic retry with exponential backoff for rate limits and transient API errors
 
 ## Installation
 

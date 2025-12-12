@@ -236,6 +236,23 @@ You'll know the venv is active when you see `(venv)` in your prompt.
 2. Make sure there are no extra spaces in your `.env` file
 3. The key should start with `sk-`
 
+### Rate Limit Errors
+
+**Problem**: Seeing messages like "Rate limit hit. Retrying in 2.0s..."
+
+**Solution**: This is **completely normal** and handled automatically! ESCAPER uses exponential backoff to retry. Your experiment will continue without any manual intervention.
+
+Example (automatic, no action needed):
+```
+⚠️  Rate limit hit. Retrying in 2.0s... (attempt 1/5)
+⚠️  Rate limit hit. Retrying in 4.0s... (attempt 2/5)
+```
+
+To reduce rate limit frequency:
+- Use `--model gpt-3.5-turbo` (higher rate limits than GPT-4)
+- Check your OpenAI account tier at platform.openai.com (higher tiers = higher limits)
+- Rate limits are expected for large experiments - the system handles them automatically
+
 ### Need to Start Over?
 
 ```bash

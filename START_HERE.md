@@ -38,6 +38,7 @@
 - **INSTALL.md** - Quick reference (points to QUICKSTART)
 - **env.example** - Template for API keys (copy to `.env`)
 - **test_installation.py** - Test your setup
+- **RATE_LIMIT_HANDLING.md** - How automatic retry works
 
 ### Documentation
 - **README.md** - Project overview and documentation

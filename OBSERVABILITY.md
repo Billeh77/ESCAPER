@@ -288,6 +288,13 @@ done
 
 **Solution**: Detailed logs can be large for long episodes. This is normal - they contain everything!
 
+### Keep seeing "Rate limit hit" messages
+
+**Solution**: This is normal and handled automatically! ESCAPER uses exponential backoff to retry. Your experiment will continue without manual intervention. If you see many rate limit messages:
+- You might be on a lower OpenAI tier (check platform.openai.com)
+- Consider using `--model gpt-3.5-turbo` (higher rate limits)
+- For large experiments, rate limits are expected - the system handles them automatically
+
 ---
 
 ## Example: Watching Trust Evolve

@@ -4,6 +4,27 @@
 
 ### New Features
 
+#### Robust Error Handling with Automatic Retry
+- **Rate limit handling**: Automatic exponential backoff when hitting OpenAI rate limits
+- **Transient error recovery**: Retries connection errors, timeouts, and server errors (5xx)
+- **Configurable**: Up to 5 retries with exponential backoff (1s → 2s → 4s → 8s → 16s, max 60s)
+- **User-friendly**: Clear console messages show retry attempts and progress
+- **No disruption**: Experiments continue automatically without manual intervention
+- **Smart retry**: Only retries transient errors, fails fast on client errors (4xx)
+
+**Example output when rate limit hit:**
+```
+⚠️  Rate limit hit. Retrying in 2.0s... (attempt 1/5)
+⚠️  Rate limit hit. Retrying in 4.0s... (attempt 2/5)
+```
+
+**Handles:**
+- `RateLimitError`: Most common, exponential backoff
+- `APIConnectionError`: Network issues, automatic retry
+- `APITimeoutError`: Slow responses, automatic retry
+- `APIError` (5xx): Server issues, automatic retry
+- `APIError` (4xx): Client errors, fails immediately (no retry)
+
 #### Automatic Terminal Output Capture
 - **Complete output saved**: When using `--log-dir`, all terminal output is automatically saved to `terminal_output_YYYYMMDD_HHMMSS.txt`
 - **No truncation**: Even if terminal buffer is limited, complete output is preserved
