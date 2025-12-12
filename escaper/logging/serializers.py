@@ -12,8 +12,17 @@ def save_metrics_summary(summary: Dict[str, Any], log_dir: str):
     os.makedirs(log_dir, exist_ok=True)
     path = os.path.join(log_dir, "metrics_summary.json")
     
+    # Make sure all values are JSON serializable
+    json_safe_summary = {
+        "num_episodes": summary.get("num_episodes", 0),
+        "success_rate": summary.get("success_rate", 0.0),
+        "avg_steps_if_success": summary.get("avg_steps_if_success", 0.0),
+        "reputation_enabled": summary.get("reputation_enabled", False),
+        "avg_final_reputation": summary.get("avg_final_reputation", {}),
+    }
+    
     with open(path, "w") as f:
-        json.dump(summary, f, indent=2)
+        json.dump(json_safe_summary, f, indent=2)
     
     print(f"Metrics saved to {path}")
 
@@ -31,6 +40,8 @@ def save_episode_logs(episodes: List["EpisodeMetrics"], log_dir: str):
                 "steps_taken": ep.steps_taken,
                 "wrong_password_attempts": ep.wrong_password_attempts,
                 "summaries": ep.summaries,
+                "reputation_enabled": ep.reputation_enabled,
+                "final_reputation_scores": ep.final_reputation_scores,
             }
             f.write(json.dumps(record) + "\n")
     

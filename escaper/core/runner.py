@@ -170,7 +170,7 @@ class SimulationRunner:
                     self.verbose_logger.print_room_event("🎉 ESCAPE SUCCESSFUL! The team has escaped!")
                 break
         
-        metrics.finalize(env_state)
+        metrics.finalize(env_state, reputation_enabled=self.settings.reputation_enabled)
         return metrics
     
     def run_many(self, seeds: List[int]) -> MetricsAccumulator:

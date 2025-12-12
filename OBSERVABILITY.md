@@ -132,9 +132,21 @@ Episode 0: ✓ SUCCESS
 Steps taken: 12
 Wrong password attempts: 0
 
+Final Average Reputation Scores:
+  🔴 Malerie: 0.425
+  🟢 Alice: 0.983
+  🟢 Bob: 0.950
+  🟢 Charlie: 1.000
+
 Episode 1: ✓ SUCCESS
 Steps taken: 14
 Wrong password attempts: 1
+
+Final Average Reputation Scores:
+  🔴 Malerie: 0.512
+  🟢 Bob: 0.967
+  🟢 Charlie: 1.000
+  🟢 Alice: 0.975
 
 ...
 
@@ -142,7 +154,17 @@ Wrong password attempts: 1
 Total episodes: 10
 Success rate: 80.00%
 Avg steps (if success): 13.50
+
+Average Final Reputation Scores (across all episodes):
+  🔴 Malerie: 0.468
+  🟢 Alice: 0.979
+  🟢 Bob: 0.958
+  🟢 Charlie: 0.992
+
+  Note: 1.0 = fully trusted, 0.5 = half-trusted, 0.0 = fully distrusted
 ```
+
+**Note**: Reputation scores only appear when `--reputation` flag is enabled.
 
 ### When to Use
 

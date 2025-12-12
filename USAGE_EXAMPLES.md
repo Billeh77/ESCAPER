@@ -432,3 +432,162 @@ python -m escaper.cli.run_experiment \
 4. Visualize agent interactions
 5. Compare different LLM models
 
+
+## Analyzing Reputation Scores
+
+### Understanding the Output
+
+When `--reputation` is enabled, you'll see reputation scores at the end of each episode:
+
+```
+Final Average Reputation Scores:
+  🔴 Malerie: 0.425
+  🟢 Alice: 0.983
+  🟢 Bob: 0.950
+  🟢 Charlie: 1.000
+```
+
+**Interpretation**:
+- **1.0** = Fully trusted (never decreased from initial value)
+- **0.7-0.99** = Mostly trusted (slight concerns)
+- **0.4-0.69** = Half-trusted (significant distrust)
+- **0.0-0.39** = Mostly distrusted (strong negative assessment)
+
+### Key Research Metric
+
+**Malerie's average score** indicates how well the team detected the adversary:
+- Near 1.0 = Adversary went undetected
+- Near 0.5 = Partial detection
+- Near 0.0 = Strong detection and distrust
+
+### Programmatic Analysis
+
+#### Check if adversary was detected
+
+```python
+import json
+
+with open('runs/adversary_rep/metrics_summary.json') as f:
+    metrics = json.load(f)
+
+if metrics.get('reputation_enabled'):
+    malerie_score = metrics['avg_final_reputation'].get('malerie', 1.0)
+    
+    if malerie_score < 0.4:
+        print(f"✓ Strong detection: {malerie_score:.3f}")
+    elif malerie_score < 0.7:
+        print(f"⚠ Moderate detection: {malerie_score:.3f}")
+    else:
+        print(f"✗ Weak detection: {malerie_score:.3f}")
+```
+
+#### Compare detection across conditions
+
+```python
+import json
+
+conditions = [
+    ("Adversary + Rep", "runs/condition3_rep/metrics_summary.json"),
+    ("Adversary + Rep + Gossip", "runs/condition4_full/metrics_summary.json"),
+]
+
+print("Detection Comparison:")
+for name, path in conditions:
+    with open(path) as f:
+        metrics = json.load(f)
+    score = metrics['avg_final_reputation'].get('malerie', 1.0)
+    print(f"  {name:25s}: {score:.3f}")
+```
+
+#### Track reputation trends across episodes
+
+```python
+import json
+
+episodes = []
+with open('runs/adversary_rep/episodes.jsonl') as f:
+    for line in f:
+        episodes.append(json.loads(line))
+
+malerie_scores = [
+    ep['final_reputation_scores'].get('malerie', 1.0)
+    for ep in episodes
+    if ep.get('reputation_enabled')
+]
+
+print(f"Malerie's reputation across {len(malerie_scores)} episodes:")
+print(f"  Average: {sum(malerie_scores)/len(malerie_scores):.3f}")
+print(f"  Min: {min(malerie_scores):.3f}")
+print(f"  Max: {max(malerie_scores):.3f}")
+print(f"  First: {malerie_scores[0]:.3f}")
+print(f"  Last: {malerie_scores[-1]:.3f}")
+```
+
+### Research Questions Using Reputation Scores
+
+**RQ1: Does gossip improve adversary detection?**
+```bash
+# Run with reputation only
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --reputation \
+  --seeds 20 \
+  --log-dir runs/rep_only
+
+# Run with reputation + gossip
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --reputation --gossip \
+  --seeds 20 \
+  --log-dir runs/rep_gossip
+
+# Compare Malerie's scores
+# Hypothesis: Gossip enables faster/stronger detection (lower score)
+```
+
+**RQ2: Does room complexity affect detection?**
+```bash
+# Simple room
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_simple_1.json \
+  --adversary --reputation \
+  --seeds 20 \
+  --log-dir runs/simple_rep
+
+# Complex room
+python -m escaper.cli.run_experiment \
+  --personas escaper/config/personas/default_personas.json \
+  --room escaper/config/rooms/room_two_stage_1.json \
+  --adversary --reputation \
+  --seeds 20 \
+  --log-dir runs/complex_rep
+
+# Hypothesis: More complex rooms provide more opportunities to detect lies
+```
+
+**RQ3: Correlation between detection and success?**
+```python
+import json
+
+episodes = []
+with open('runs/adversary_rep/episodes.jsonl') as f:
+    for line in f:
+        episodes.append(json.loads(line))
+
+# Split by success
+successful = [ep for ep in episodes if ep['success']]
+failed = [ep for ep in episodes if not ep['success']]
+
+def avg_malerie_score(eps):
+    scores = [ep['final_reputation_scores'].get('malerie', 1.0) for ep in eps]
+    return sum(scores) / len(scores) if scores else 0
+
+print(f"Successful episodes - Malerie's avg: {avg_malerie_score(successful):.3f}")
+print(f"Failed episodes - Malerie's avg: {avg_malerie_score(failed):.3f}")
+
+# Hypothesis: Lower trust in Malerie correlates with success
+```
+

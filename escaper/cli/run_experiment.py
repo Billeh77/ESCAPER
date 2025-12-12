@@ -215,11 +215,13 @@ def main():
             verbose_logger.close()
         
         # Print episode summary (also in verbose to show metrics like wrong password attempts)
-        print_episode_summary(i, ep_metrics)
+        agent_names_map = {p.agent_id: p.name for p in personas}
+        print_episode_summary(i, ep_metrics, agent_names=agent_names_map)
     
     # Print and save final summary
     summary = acc.summary()
-    print_final_summary(summary)
+    agent_names_map = {p.agent_id: p.name for p in personas}
+    print_final_summary(summary, agent_names=agent_names_map)
     
     # Save logs if requested
     if args.log_dir:

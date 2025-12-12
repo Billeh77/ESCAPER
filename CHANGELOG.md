@@ -1,6 +1,30 @@
 # ESCAPER Changelog
 
-## Version 0.1.1 (Current)
+## Version 0.1.2 (Current)
+
+### New Features
+
+#### Final Reputation Score Metrics
+- **Per-episode scores**: Shows average reputation each agent has from all teammates
+- **Cross-episode average**: Final summary shows average across all episodes
+- **Key research metric**: Track how well teams detect malicious agents
+  - Malerie's score near 0.0 = strong detection
+  - Malerie's score near 1.0 = went undetected
+- **Visual indicators**: 
+  - 🟢 High trust (≥0.7)
+  - 🟡 Medium trust (0.4-0.7)
+  - 🔴 Low trust (<0.4)
+- **Sorted output**: Lowest trust shown first for easy identification
+- **Saved to logs**: Included in `episodes.jsonl` and `metrics_summary.json`
+
+#### Implementation
+- New fields in `EpisodeMetrics`: `final_reputation_scores`, `reputation_enabled`
+- Automatic calculation at episode end via `finalize()`
+- Aggregation across episodes in `MetricsAccumulator.summary()`
+- Updated print functions to display scores with agent names
+- JSON serialization includes reputation data
+
+## Version 0.1.1
 
 ### New Features
 

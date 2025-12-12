@@ -310,6 +310,12 @@ python -m escaper.cli.run_experiment \
 ### Default Mode (no flags)
 Minimal output - just episode results and final summary. Clean and concise.
 
+**Output includes**:
+- Success/failure per episode
+- Steps taken
+- Wrong password attempts
+- **Final reputation scores** (when --reputation enabled) - shows average trust each agent has from teammates
+
 **Best for**: Running many episodes for statistical analysis
 
 ## Command Line Flags

@@ -149,17 +149,31 @@ class VerboseLogger:
             self.file_handle.close()
 
 
-def print_episode_summary(episode_num: int, metrics: "EpisodeMetrics"):
+def print_episode_summary(episode_num: int, metrics: "EpisodeMetrics", agent_names: Dict[str, str] = None):
     """Print a summary of a single episode."""
     status = "✓ SUCCESS" if metrics.success else "✗ FAILED"
     print(f"\n{'='*60}")
     print(f"Episode {episode_num}: {status}")
     print(f"Steps taken: {metrics.steps_taken}")
     print(f"Wrong password attempts: {metrics.wrong_password_attempts}")
+    
+    # Print final reputation scores if enabled
+    if metrics.reputation_enabled and metrics.final_reputation_scores:
+        print(f"\nFinal Average Reputation Scores:")
+        # Sort by score to show lowest trust first (usually the malicious agent)
+        sorted_scores = sorted(
+            metrics.final_reputation_scores.items(),
+            key=lambda x: x[1]
+        )
+        for agent_id, avg_score in sorted_scores:
+            display_name = agent_names.get(agent_id, agent_id) if agent_names else agent_id
+            emoji = "🟢" if avg_score >= 0.7 else "🟡" if avg_score >= 0.4 else "🔴"
+            print(f"  {emoji} {display_name}: {avg_score:.3f}")
+    
     print(f"{'='*60}")
 
 
-def print_final_summary(summary: Dict[str, Any]):
+def print_final_summary(summary: Dict[str, Any], agent_names: Dict[str, str] = None):
     """Print final aggregate statistics."""
     print("\n" + "="*60)
     print("📊 EXPERIMENT SUMMARY")
@@ -167,6 +181,21 @@ def print_final_summary(summary: Dict[str, Any]):
     print(f"Total episodes: {summary['num_episodes']}")
     print(f"Success rate: {summary['success_rate']:.2%}")
     print(f"Avg steps (if success): {summary['avg_steps_if_success']:.2f}")
+    
+    # Print average reputation scores across all episodes
+    if summary.get('reputation_enabled') and summary.get('avg_final_reputation'):
+        print(f"\nAverage Final Reputation Scores (across all episodes):")
+        # Sort by score to show lowest trust first
+        sorted_scores = sorted(
+            summary['avg_final_reputation'].items(),
+            key=lambda x: x[1]
+        )
+        for agent_id, avg_score in sorted_scores:
+            display_name = agent_names.get(agent_id, agent_id) if agent_names else agent_id
+            emoji = "🟢" if avg_score >= 0.7 else "🟡" if avg_score >= 0.4 else "🔴"
+            print(f"  {emoji} {display_name}: {avg_score:.3f}")
+        print(f"\n  Note: 1.0 = fully trusted, 0.5 = half-trusted, 0.0 = fully distrusted")
+    
     print("="*60 + "\n")
 
 
